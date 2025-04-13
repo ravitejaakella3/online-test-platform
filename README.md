@@ -8,7 +8,7 @@ REST API for auto-saving student responses during online tests, with 30-second a
 ### Clone Repository
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/online-test-platform.git
+git clone https://github.com/ravitejaakella3/online-test-platform
 
 # Navigate to project directory
 cd online-test-platform

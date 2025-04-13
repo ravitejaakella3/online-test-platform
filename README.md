@@ -17,120 +17,81 @@ cd online-test-platform
 mvn clean install
 ```
 
-### Prerequisites
-- Java 17 or higher
-- Maven 3.6+
-- PostgreSQL 12+
-- Git
-
 ## Project Structure
 ```
-online-test-platform
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── exam
-│   │   │           ├── OnlineTestApplication.java     # Main application class
-│   │   │           ├── config
-│   │   │           │   └── DataInitializer.java       # Test data initialization
-│   │   │           ├── controller
-│   │   │           │   └── AutoSaveController.java
-│   │   │           ├── model
-│   │   │           │   ├── Student.java
-│   │   │           │   ├── Test.java
-│   │   │           │   ├── Question.java
-│   │   │           │   └── StudentAnswer.java
-│   │   │           ├── repository
-│   │   │           │   ├── StudentRepository.java
-│   │   │           │   ├── TestRepository.java
-│   │   │           │   ├── QuestionRepository.java
-│   │   │           │   └── StudentAnswerRepository.java
-│   │   │           └── service
-│   │   │               └── DataInitializationService.java  # Data initialization service
-│   │   └── resources
-│   │       ├── application.properties
-│   │       └── schema.sql
-│   └── test
-│       └── java
-│           └── com
-│               └── exam
-│                   └── OnlineTestApplicationTests.java
+online-test-platform/
+├── src/                    # Backend source files
+├── frontend/              # React frontend
+├── pom.xml                # Maven configuration
+└── README.md
 ```
 
-## Key Components
+## Features
+- Auto-save every 30 seconds
+- Real-time save status display
+- Answer status tracking (ATTEMPTED, SKIPPED, MARKED_FOR_REVIEW)
+- Optimistic locking for concurrency
+- Debug information panel
 
-### Main Application
-```java
-@SpringBootApplication
-@EnableScheduling
-public class OnlineTestApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(OnlineTestApplication.class, args);
-    }
-}
-```
-
-### Data Initialization
-The application uses `DataInitializationService` to automatically create test data on startup:
-
-```java
-@Service
-public class DataInitializationService {
-    @PostConstruct
-    @Transactional
-    public void initializeData() {
-        // Creates Science Quiz (ID: 2)
-        Test test = new Test();
-        test.setTitle("Science Quiz");
-        test.setDuration(45);
-
-        // Adds question "What is H2O?" (ID: 2)
-        Question question = new Question();
-        question.setText("What is H2O?");
-        question.setTest(test);
-    }
-}
-```
+## Prerequisites
+- Java 17+
+- Maven 3.6+
+- PostgreSQL 12+
+- Node.js 14+
+- npm 6+
 
 ## Setup
-1. Clone the repository as shown above
-2. Install PostgreSQL if not already installed
-3. Create database:
+
+### Backend
+1. Clone repository:
+```bash
+git clone https://github.com/yourusername/online-test-platform.git
+cd online-test-platform
+```
+
+2. Configure database:
 ```sql
 CREATE DATABASE online_test_db;
 ```
 
-4. Update `application.properties` with your database credentials:
+3. Update `application.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5433/online_test_db
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 ```
 
-5. Run the application:
+4. Run backend:
 ```bash
 mvn spring-boot:run
 ```
 
-## Features
-- Auto-save every 30 seconds
-- Optimistic locking for concurrency
-- Answer status tracking (ATTEMPTED, SKIPPED, MARKED_FOR_REVIEW)
-- Timestamp tracking
-- Automatic test data initialization
-- Question-test relationship validation
+### Frontend
+1. Install dependencies:
+```bash
+cd frontend
+npm install
+```
+
+2. Start development server:
+```bash
+npm start
+```
+
+## Usage
+Access the application at http://localhost:3000
+
+The interface shows:
+- Questions from the test
+- Auto-save countdown timer
+- Last save timestamp
+- Debug information panel
 
 ## API Endpoints
 
-### Get Questions
-```http
-GET http://localhost:8080/api/questions/test/2
-```
-
 ### Auto-save Answers
 ```http
-POST http://localhost:8080/api/autosave
+POST /api/autosave
 Content-Type: application/json
 
 {
@@ -146,14 +107,32 @@ Content-Type: application/json
 }
 ```
 
-## Testing
+### Get Test Questions
+```http
+GET /api/questions/test/{testId}
+```
+
+## Development
+
+### Running Tests
 ```bash
-# Run tests
+# Backend tests
 mvn test
 
-# Start application
-mvn spring-boot:run
+# Frontend tests
+cd frontend
+npm test
+```
+
+### Building for Production
+```bash
+# Backend
+mvn clean package
+
+# Frontend
+cd frontend
+npm run build
 ```
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see LICENSE file

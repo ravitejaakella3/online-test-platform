@@ -26,8 +26,10 @@ public class AutoSaveController {
 
     @PostMapping("/autosave")
     public ResponseEntity<?> saveStudentAnswers(@Valid @RequestBody AutoSaveRequest request) {
-        System.out.println("Request received - studentId: " + request.getStudentId() 
-            + ", testId: " + request.getTestId());
+        System.out.println("=== Auto-save Request ===");
+        System.out.println("Student ID: " + request.getStudentId());
+        System.out.println("Test ID: " + request.getTestId());
+        System.out.println("Number of answers: " + request.getAnswers().size());
         
         // Verify question exists first
         Question question = questionRepository.findById(request.getAnswers().get(0).getQuestionId())
@@ -58,12 +60,13 @@ public class AutoSaveController {
                 request.getTestId(),
                 request.getAnswers()
             );
+            System.out.println("Answers saved successfully. Count: " + savedAnswers.size());
             return ResponseEntity.ok(savedAnswers);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                .body("An error occurred while saving answers: " + e.getMessage());
+            System.err.println("Error saving answers: " + e.getMessage());
+            throw e;
         }
     }
 
